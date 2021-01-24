@@ -3,8 +3,10 @@ library(tidyverse)
 dates <- seq(as.Date('2021-01-23'),
              as.Date('2021-01-23') + 99,
              by = 1)
-xs <- rep(1:10, 10)
-ys <- rep(10:1, each = 10)
+xs <- rep(1:7, 20)
+ys <- rep(15:1, each = 7)
+xs <- xs[1:100]
+ys <- ys[1:length(xs)]
 
 df <- tibble(
   date = dates,
@@ -15,7 +17,8 @@ df <- tibble(
   mutate(type = ifelse(dow %in% c('Saturday', 'Sunday'), 'Weekend', 'Weekday')) %>%
   mutate(dummy = as.numeric(dow == 'Monday')) %>%
   mutate(cs = cumsum(dummy))
-
+cols <- rainbow(length(unique(df$cs)))
+cols <- sample(cols, size = length(cols))
 ggplot(data = df,
        aes(x = x,
            y = y,
@@ -37,11 +40,13 @@ ggplot(data = df,
   scale_colour_gradientn(colors = cols) +
   theme(legend.position = 'none') +
   geom_text(aes(label = format(date, '%d\n%b')),
-            alpha = 0.6) +
-  geom_point(data = df %>% filter(type == 'Weekend'),
-             size = 16,
-             color = 'black') +
-  geom_point(data = df %>% filter(type == 'Weekend'),
-             size = 17,
-             color = 'black') 
-ggsave('~/Desktop/calendar.png', height = 8, width = 8)
+            alpha = 0.6,
+            size = 3) #+
+  # geom_point(data = df %>% filter(type == 'Weekend'),
+  #            size = 16,
+  #            color = 'black') +
+  # geom_point(data = df %>% filter(type == 'Weekend'),
+  #            size = 17,
+  #            color = 'black') 
+ggsave('~/Desktop/calendar.png', height = 13, width = 10)
+
